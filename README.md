@@ -1,5 +1,7 @@
 # URL Shortener (Encurtador de URL's)
 
+![271shots_so](https://github.com/Sans-arch/url-shortener/assets/69471715/8447b71d-3939-40fc-aca1-45987879d72b)
+
 O projeto URL Shortener é uma aplicação web que permite aos usuários converter URLs longas em URLs curtas e fáceis de compartilhar. Este serviço é amplamente utilizado em redes sociais, campanhas de marketing e outros contextos onde a simplicidade e a estética das URLs são importantes.
 
 
