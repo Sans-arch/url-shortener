@@ -4,13 +4,9 @@ import com.negreira.santiago.urlshortener.dto.ShortenUrlRequestDTO;
 import com.negreira.santiago.urlshortener.dto.ShortenUrlResponseDTO;
 import com.negreira.santiago.urlshortener.service.UrlService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
-import java.net.URISyntaxException;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 @RequestMapping("/api")
@@ -19,16 +15,9 @@ public class UrlController {
     private final UrlService urlService;
 
     @GetMapping("/{shortUrl}")
-    public ResponseEntity<Object> redirect(@PathVariable String shortUrl) {
-        return urlService.getOriginalUrl(shortUrl)
-                .map(url -> {
-                    try {
-                        return ResponseEntity.status(HttpStatus.FOUND).location(new URI(url.getOriginalUrl())).build();
-                    } catch (URISyntaxException e) {
-                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-                    }
-                })
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public RedirectView redirectToOriginalUrl(@PathVariable String shortUrl) {
+        String originalUrl = urlService.getOriginalUrl(shortUrl);
+        return new RedirectView(originalUrl);
     }
 
     @PostMapping(value = "/shorten", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
