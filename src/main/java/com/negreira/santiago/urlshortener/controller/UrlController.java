@@ -1,8 +1,11 @@
 package com.negreira.santiago.urlshortener.controller;
 
+import com.negreira.santiago.urlshortener.dto.ShortenUrlRequestDTO;
+import com.negreira.santiago.urlshortener.dto.ShortenUrlResponseDTO;
 import com.negreira.santiago.urlshortener.service.UrlService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,13 +18,8 @@ import java.net.URISyntaxException;
 public class UrlController {
     private final UrlService urlService;
 
-    @PostMapping("/shorten")
-    public String shortenUrl(String originalUrl) {
-        return urlService.shortenUrl(originalUrl);
-    }
-
     @GetMapping("/{shortUrl}")
-    public ResponseEntity<Object> redirect(@PathVariable String shortUrl) throws URISyntaxException {
+    public ResponseEntity<Object> redirect(@PathVariable String shortUrl) {
         return urlService.getOriginalUrl(shortUrl)
                 .map(url -> {
                     try {
@@ -31,6 +29,12 @@ public class UrlController {
                     }
                 })
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @PostMapping(value = "/shorten", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ShortenUrlResponseDTO shortenUrl(@RequestBody ShortenUrlRequestDTO dto) {
+        String shortUrl = urlService.shortenUrl(dto);
+        return new ShortenUrlResponseDTO(shortUrl);
     }
 
 }

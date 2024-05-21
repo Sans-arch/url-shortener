@@ -1,8 +1,11 @@
 package com.negreira.santiago.urlshortener.service;
 
+import com.negreira.santiago.urlshortener.dto.ShortenUrlRequestDTO;
 import com.negreira.santiago.urlshortener.entity.Url;
 import com.negreira.santiago.urlshortener.repository.UrlRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -11,26 +14,26 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UrlService {
     private final UrlRepository urlRepository;
-
-    public String shortenUrl(String originalUrl) {
-        Url existingUrl = urlRepository.findByOriginalUrl(originalUrl);
-        if (existingUrl != null) {
-            return existingUrl.getShortUrl();
-        }
-
-        Url url = new Url(originalUrl, generateShortUrl());
-        urlRepository.save(url);
-
-        return url.getShortUrl();
-    }
+    private static final Logger logger = LoggerFactory.getLogger(UrlService.class);
 
     public Optional<Url> getOriginalUrl(String shortUrl) {
         return Optional.ofNullable(urlRepository.findByShortUrl(shortUrl));
     }
 
-    private String generateShortUrl() {
-        // Implement a short URL generation logic
-        return "bla";
+    public String shortenUrl(ShortenUrlRequestDTO dto) {
+        Url existingUrl = urlRepository.findByOriginalUrl(dto.getOriginalUrl());
+        if (existingUrl != null) {
+            logger.info("Url already exists");
+            return existingUrl.getShortUrl();
+        }
+
+        Url generatedUrl = generateShortUrl(dto.getOriginalUrl());
+        return generatedUrl.getShortUrl();
     }
 
+    private Url generateShortUrl(String originalUrl) {
+        Url url = new Url(originalUrl, "short-url");
+        urlRepository.save(new Url(originalUrl, "short-url"));
+        return url;
+    }
 }
