@@ -13,9 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Url {
-    public Url(String originalUrl, String shortUrl) {
+    public Url(String originalUrl) {
         this.originalUrl = originalUrl;
-        this.shortUrl = shortUrl;
     }
 
     @Id
