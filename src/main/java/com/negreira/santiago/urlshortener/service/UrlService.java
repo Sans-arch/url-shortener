@@ -18,10 +18,9 @@ public class UrlService {
             return existingUrl.getShortUrl();
         }
 
-        Url url = new Url();
-        url.setOriginalUrl(originalUrl);
-        url.setShortUrl("shortUrl");
+        Url url = new Url(originalUrl, generateShortUrl());
         urlRepository.save(url);
+
         return url.getShortUrl();
     }
 
